@@ -38,10 +38,10 @@ app.get('/files',(req,res)=>{
   res.json(files);
   });
 })
-app.get('/files/:filename', (req, res) => {
+app.get('/file/:filename', (req, res) => {
 
   const fileName = req.params.filename
-
+  
   if (!fileName) {
     return res.status(404).send("File not found`")
   }
@@ -51,9 +51,16 @@ app.get('/files/:filename', (req, res) => {
     return res.status(404).send("File not found")
   }
 
-  const data=fs.readFileSync(__dirname + `./files/${fileName}`, {encoding:'utf-8'})
-  return res.status(200).send(data)
+  try{
+    const data=fs.readFileSync(__dirname + `/files/${fileName}`, {encoding:'utf-8'})
+    return res.status(200).send(data)
+  
 
+  }catch(err){
+    console.log(err)
+    return res.status(500).send(err)
+  }
+ 
 })
 app.all("*", (req, res) => {
   return res.status(404).send("Route not found")
